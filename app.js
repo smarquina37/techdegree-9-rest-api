@@ -5,6 +5,9 @@ const express = require("express");
 const morgan = require("morgan");
 const Sequelize = require("./db/index.js").sequelize;
 
+// const { sequelize, models } = require("./db");
+// const { User, Course } = models;
+
 // variable to enable global error logging
 const enableGlobalErrorLogging =
   process.env.ENABLE_GLOBAL_ERROR_LOGGING === "true";

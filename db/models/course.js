@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Course.init(
     {
-      firstName: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -16,23 +16,22 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      lastName: {
-        type: DataTypes.STRING,
+      description: {
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: {
           notEmpty: {
-            msg: 'Please provide a value for "author"',
+            msg: 'Please provide a value for "description"',
           },
         },
       },
-      emailAddress: {
+      estimatedTime: {
         type: DataTypes.STRING,
       },
-      password: {
+      materialsNeeded: {
         type: DataTypes.STRING,
       },
     },
-
     {
       sequelize,
     }
@@ -41,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
   // Add a one-to-one association between the Course and User models.
   Course.associate = (models) => {
     Course.belongsTo(models.Person, {
+      as: "user",
       foreignKey: {
         fieldName: "userId",
         allowNull: false,
