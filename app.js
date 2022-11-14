@@ -4,7 +4,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const routes = require("./routes");
-const Sequelize = require("./models/index.js").sequelize;
+const Sequelize = require("./models").sequelize;
 
 // const { sequelize, models } = require("./db");
 // const { User, Course } = models;
@@ -16,15 +16,18 @@ const enableGlobalErrorLogging =
 // create the Express app
 const app = express();
 
+// Setup request body JSON parsing.
+app.use(express.json());
+
 // setup morgan which gives us http request logging
 app.use(morgan("dev"));
 
-// setup a friendly greeting for the root route
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to the REST API project!",
-  });
-});
+// setup a friendly greeting for the root route - DELETE?
+// app.get("/", (req, res) => {
+//   res.json({
+//     message: "Welcome to the REST API project!",
+//   });
+// });
 
 //Add routes
 app.use("/api", routes);
@@ -57,6 +60,7 @@ const server = app.listen(app.get("port"), () => {
 });
 
 // Use sequelize.sync() method to sync the model with the database
+// And use sequelize.authenticate() to test database connection
 (async () => {
   await Sequelize.sync();
   try {
