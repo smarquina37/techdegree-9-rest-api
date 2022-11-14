@@ -9,7 +9,7 @@ exports.authenticateUser = async (req, res, next) => {
   const credentials = auth(req);
   // If the user's credentials are available...
   if (credentials) {
-    const user = await User.findOne({ where: { id: credentials.userId } });
+    const user = await User.findOne({ where: { id: credentials.userId } }); //Not sure of this
   }
 
   // If a user was successfully retrieved from the data store...
