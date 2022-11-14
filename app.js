@@ -23,11 +23,11 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // setup a friendly greeting for the root route - DELETE?
-// app.get("/", (req, res) => {
-//   res.json({
-//     message: "Welcome to the REST API project!",
-//   });
-// });
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the REST API project!",
+  });
+});
 
 //Add routes
 app.use("/api", routes);
