@@ -46,8 +46,8 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
-      // res.redirect("/");
-      res.status(201).json({ message: "Account successfully created!" });
+      res.redirect("/");
+      res.status(201).end();
     } catch (error) {
       console.log("ERORR: ", error.name);
 
