@@ -34,7 +34,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
-      res.redirect("/");
+      res.location("/");
       res.status(201).end();
     } catch (error) {
       console.log("ERORR: ", error.name);
@@ -72,17 +72,20 @@ router.get(
 
 // // *GET route that will return the corresponding course including the User associated with that course
 // // and a 200 HTTP status code
-// router.get(
-//   "/courses/:id",
-//   asyncHandler(async (req, res) => {
-//     const course = await Course.findByPk(req.params.id); // or Course.find(record => record.id == id)?
-//     if (course) {
-//       res.status(200).json(course);
-//     } else {
-//       res.status(404).json({ message: "Course was not found" });
-//     }
-//   })
-// );
+router.get(
+  "/courses/:id",
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+      ],
+    });
+    res.status(200).json(course);
+  })
+);
 
 // // *POST route that will create a new course, set Location header to the URI for newly created course,
 // // and return a 201 HTTP status code and no content
@@ -91,7 +94,7 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
-      // res.location("/courses/:id");
+      res.location("/courses/" + `${course.id}`);
       res.status(201).end();
     } catch (error) {
       console.log("ERORR: ", error.name);
