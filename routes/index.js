@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models").User;
 const Course = require("../models").Course;
+const { authenticateUser } = require("../middleware/auth-user");
 
 // async Handler -  middleware to wrap each of our routes automatically in a try-catch block
 function asyncHandler(cb) {
@@ -17,25 +18,12 @@ function asyncHandler(cb) {
 /* USER ROUTES */
 // *GET route that returns all properties and values for the currently authenticated User
 // along with a 200 HTTP status code
-// router.get(
-//   "/users",
-//   asyncHandler(async (req, res) => {
-//     const user = req.currentUser;
-//     res.status(200).json({
-//       firstName: user.firstName,
-//       lastName: user.lastName,
-//       emailAddress: user.emailAddress,
-//       password: user.password,
-//     });
-//   })
-// );
-
-// **** DELETE BELOW not part of project
 router.get(
   "/users",
+  authenticateUser,
   asyncHandler(async (req, res) => {
-    let users = await User.findAll();
-    res.json(users);
+    const user = req.currentUser;
+    res.status(200).json(user);
   })
 );
 
@@ -103,8 +91,8 @@ router.post(
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
-      // res.redirect("/");
-      res.status(201).json({ message: "Account successfully created!" });
+      // res.location("/courses/:id");
+      res.status(201).end();
     } catch (error) {
       console.log("ERORR: ", error.name);
 
