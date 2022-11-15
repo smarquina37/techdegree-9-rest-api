@@ -114,10 +114,21 @@ router.post(
 
 // // *PUT route that will update the corresponding course
 // // and return a 204 HTTP status code and no content
-// router.put(
-//   "/courses/:id",
-//   asyncHandler(async (req, res) => {})
-// );
+router.put(
+  "/courses/:id",
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course) {
+      course.title = req.body.title;
+      course.description = req.body.description;
+      course.estimatedTime = req.body.estimatedTime;
+      course.materialsNeeded = req.body.materialsNeeded;
+      res.status(404).end();
+    } else {
+      throw error;
+    }
+  })
+);
 
 // // *DELETE route that will delete the corresponding course
 // //and return a 204 HTTP status code and no content
