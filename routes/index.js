@@ -91,6 +91,7 @@ router.get(
 // // and return a 201 HTTP status code and no content
 router.post(
   "/courses",
+  authenticateUser,
   asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
@@ -116,16 +117,29 @@ router.post(
 // // and return a 204 HTTP status code and no content
 router.put(
   "/courses/:id",
+  authenticateUser,
   asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
-    if (course) {
-      course.title = req.body.title;
-      course.description = req.body.description;
-      course.estimatedTime = req.body.estimatedTime;
-      course.materialsNeeded = req.body.materialsNeeded;
-      res.status(404).end();
-    } else {
-      throw error;
+    try {
+      const course = await Course.findByPk(req.params.id);
+      if (course) {
+        course.title = req.body.title;
+        course.description = req.body.description;
+        course.estimatedTime = req.body.estimatedTime;
+        course.materialsNeeded = req.body.materialsNeeded;
+        res.status(404).end();
+      }
+    } catch (error) {
+      console.log("ERORR: ", error.name);
+
+      if (
+        error.name === "SequelizeValidationError" ||
+        error.name === "SequelizeUniqueConstraintError"
+      ) {
+        const errors = error.errors.map((err) => err.message);
+        res.status(400).json({ errors });
+      } else {
+        throw error;
+      }
     }
   })
 );
@@ -134,12 +148,13 @@ router.put(
 // //and return a 204 HTTP status code and no content
 // router.delete(
 //   "/courses/:id",
+//   authenticateUser,
 //   asyncHandler(async (req, res, next) => {
 //     const course = await Course.findByPk(req.params.id);
 //     if (course) {
-//       await course.destroy(); //Not sure this is the correct function
+//       return res.status(204).end();
 //     } else {
-//       next(err);
+//       throw error;
 //     }
 //   })
 // );

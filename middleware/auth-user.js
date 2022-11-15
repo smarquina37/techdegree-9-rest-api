@@ -28,10 +28,12 @@ exports.authenticateUser = async (req, res, next) => {
       // so any middleware functions that follow this middleware function
       // will have access to the user's information.
       if (authenticated) {
-        console.log(`Authentication successful for username: ${user.username}`);
+        console.log(
+          `Authentication successful for username: ${user.emailAddress}`
+        );
         req.currentUser = user;
       } else {
-        message = `Authentication failure for username: ${user.username}`;
+        message = `Authentication failure for username: ${user.emailAddress}`;
       }
     } else {
       message = `User not found for username: ${credentials.name}`;
