@@ -122,11 +122,16 @@ router.put(
     try {
       const course = await Course.findByPk(req.params.id);
       if (course) {
-        course.title = req.body.title;
-        course.description = req.body.description;
-        course.estimatedTime = req.body.estimatedTime;
-        course.materialsNeeded = req.body.materialsNeeded;
-        res.status(404).end();
+        if (course.userId === req.body.userId) {
+          await course.update(req.body);
+          res.status(204).end();
+        } else {
+          res
+            .status(403)
+            .json({ message: "You don't have access to update this course" });
+        }
+      } else {
+        res.status(404).json({ message: "Course not found" });
       }
     } catch (error) {
       console.log("ERORR: ", error.name);
@@ -146,17 +151,28 @@ router.put(
 
 // // *DELETE route that will delete the corresponding course
 // //and return a 204 HTTP status code and no content
-// router.delete(
-//   "/courses/:id",
-//   authenticateUser,
-//   asyncHandler(async (req, res, next) => {
-//     const course = await Course.findByPk(req.params.id);
-//     if (course) {
-//       return res.status(204).end();
-//     } else {
-//       throw error;
-//     }
-//   })
-// );
+router.delete(
+  "/courses/:id",
+  authenticateUser,
+  asyncHandler(async (req, res) => {
+    try {
+      const course = await Course.findByPk(req.params.id);
+      if (course) {
+        if (course.userId === req.body.userId) {
+          await course.destroy();
+          res.status(204).end();
+        } else {
+          res
+            .status(403)
+            .json({ message: "You don't have access to delete this course" });
+        }
+      } else {
+        res.status(404).json({ message: "Course not found" });
+      }
+    } catch (error) {
+      console.log("ERORR: ", error.name);
+    }
+  })
+);
 
 module.exports = router;
