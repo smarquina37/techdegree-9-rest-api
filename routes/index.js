@@ -126,21 +126,21 @@ router.put(
   authenticateUser,
   asyncHandler(async (req, res) => {
     try {
-      const course = await Course.findByPk(req.params.id);
+      let course = await Course.findByPk(req.params.id);
       if (course) {
-        if (course.userId === req.body.userId) {
+        if (req.currentUser.id === course.userId) {
           await course.update(req.body);
           res.status(204).end();
         } else {
           res
-            .status(401)
+            .status(403)
             .json({ message: "You don't have access to update this course" });
         }
       } else {
         res.status(404).json({ message: "Course not found" });
       }
     } catch (error) {
-      console.log("ERORR: ", error.name);
+      console.log("ERROR: ", error.name);
 
       if (
         error.name === "SequelizeValidationError" ||
