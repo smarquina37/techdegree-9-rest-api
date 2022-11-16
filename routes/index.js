@@ -94,9 +94,15 @@ router.post(
   authenticateUser,
   asyncHandler(async (req, res) => {
     try {
-      const course = await Course.create(req.body);
-      res.location("/courses/" + `${course.id}`);
-      res.status(201).end();
+      if (req.currentUser) {
+        const course = await Course.create(req.body);
+        res.location("/courses/" + `${course.id}`);
+        res.status(201).end();
+      } else {
+        res
+          .status(403)
+          .json({ message: "You don't have access to update this course" });
+      }
     } catch (error) {
       console.log("ERORR: ", error.name);
 
@@ -127,7 +133,7 @@ router.put(
           res.status(204).end();
         } else {
           res
-            .status(403)
+            .status(401)
             .json({ message: "You don't have access to update this course" });
         }
       } else {
@@ -158,8 +164,8 @@ router.delete(
     try {
       const course = await Course.findByPk(req.params.id);
       if (course) {
-        if (course.userId === req.body.userId) {
-          await course.destroy(); //{ where: { id: req.params.id } }
+        if (course.userId === req.currentUser.id) {
+          await course.destroy();
           res.status(204).end();
         } else {
           res
