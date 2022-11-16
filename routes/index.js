@@ -100,7 +100,7 @@ router.post(
         res.status(201).end();
       } else {
         res
-          .status(403)
+          .status(401)
           .json({ message: "You don't have access to update this course" });
       }
     } catch (error) {
@@ -169,7 +169,7 @@ router.delete(
           res.status(204).end();
         } else {
           res
-            .status(403)
+            .status(401)
             .json({ message: "You don't have access to delete this course" });
         }
       } else {
