@@ -159,7 +159,7 @@ router.delete(
       const course = await Course.findByPk(req.params.id);
       if (course) {
         if (course.userId === req.body.userId) {
-          await course.destroy();
+          await course.destroy(); //{ where: { id: req.params.id } }
           res.status(204).end();
         } else {
           res
